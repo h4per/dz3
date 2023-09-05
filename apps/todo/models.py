@@ -8,7 +8,7 @@ User = get_user_model()
 class ToDo(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        related_name='user_posts',
+        related_name='user_todo',
         verbose_name="Пользователь"
     )
     title = models.CharField(

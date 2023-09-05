@@ -18,8 +18,8 @@ class ToDoAPIViewSet(GenericViewSet,
     queryset = ToDo.objects.all()
     serializer_class = ToDoSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['title', 'description', 'user']
-    search_fields = ['title', 'description', 'user__username']
+    filterset_fields = ['user', 'title', 'description']
+    search_fields = ['user__username', 'title', 'description']
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
