@@ -1,8 +1,16 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
+User = get_user_model()
+
 class ToDo(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        related_name='user_posts',
+        verbose_name="Пользователь"
+    )
     title = models.CharField(
         max_length=200,
         verbose_name='Название таска'

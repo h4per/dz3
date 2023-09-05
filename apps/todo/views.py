@@ -1,10 +1,12 @@
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import mixins
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 from apps.todo.models import ToDo 
 from apps.todo.serializers import ToDoSerializer, ToDoDetailSerializer
-from apps.users.permissions import UserPermission
+from apps.todo.permissions import ToDoPermission
 
 # Create your views here.
 class ToDoAPIViewSet(GenericViewSet,
@@ -15,11 +17,18 @@ class ToDoAPIViewSet(GenericViewSet,
                      mixins.DestroyModelMixin):
     queryset = ToDo.objects.all()
     serializer_class = ToDoSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['title', 'description', 'user']
+    search_fields = ['title', 'description', 'user__username']
 
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return ToDoDetailSerializer
+        return ToDoSerializer
     
     def get_permissions(self):
         if self.action in ('update', 'partial_update', 'destroy'):
-            return (UserPermission(), )
+            return (ToDoPermission(), )
         return (AllowAny(), )
     
     def perform_create(self, serializer):
